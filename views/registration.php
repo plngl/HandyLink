@@ -6,6 +6,8 @@
         header("Location: service.php");
         exit;
     }
+
+    $base_url = dirname($_SERVER['SCRIPT_NAME'], 2) . '/';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +19,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="registration.css">
+    <link rel="stylesheet" href="style/registration.css">
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
     <div class="register-card w-full max-w-md p-8 animate-fade-in">
@@ -81,6 +83,10 @@
             </a>
         </div>
     </div>
-    <script src="registration.js"></script>
+
+    <script>
+        const BASE_URL = "<?= $base_url ?>";
+    </script>
+    <script src="script/registration.js"></script>
 </body>
 </html>

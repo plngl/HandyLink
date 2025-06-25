@@ -105,47 +105,51 @@ $(document).ready(function() {
         // If validation passes, submit the form
         let formData = new FormData(this);
 
-        fetch("http://localhost/handylink/controllers/routes.php?action=registration", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Registration Successful!',
-                    text: data.message,
-                    confirmButtonText: 'Continue',
-                    confirmButtonColor: '#6366f1',
-                    timer: 2000,
-                    timerProgressBar: true
-                }).then(() => {
-                    window.location.href = 'otp_verification.php?code=' + data.activation_code;
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Registration Failed',
-                    text: data.error || 'An error occurred during registration',
+        $.ajax({
+            url: BASE_URL + "controllers/routes.php?action=registration",
+            type: "POST",
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function(data) {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registration Successful!',
+                        text: data.message,
+                        confirmButtonText: 'Continue',
+                        confirmButtonColor: '#6366f1',
+                        timer: 2000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = 'otp_verification.php?code=' + data.activation_code;
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed',
+                        text: data.error || 'An error occurred during registration',
                         confirmButtonText: 'Try Again',
                         confirmButtonColor: '#6366f1'
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'An unexpected error occurred',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#6366f1'
                 });
+            },
+            complete: function() {
+                registerText.textContent = 'Register';
+                registerSpinner.classList.add('hidden');
+                registerButton.disabled = false;
             }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Connection Error',
-                text: 'An unexpected error occurred',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#6366f1'
-            });
-        })
-        .finally(() => {
-            registerText.textContent = 'Register';
-            registerSpinner.classList.add('hidden');
-            registerButton.disabled = false;
         });
+
     });
 });
