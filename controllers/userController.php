@@ -36,5 +36,44 @@ class UserController {
             exit;
         }
     }
+
+    public function loginUser() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+
+            $user = $this->userModel->getUserEmail($email);
+            if ($user) {
+                if (password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['profile'] = $user['profile'];
+                    $_SESSION['name'] = $user['name'];
+                    $_SESSION['user_email'] = $user['email'];
+                    $_SESSION['password'] = $user['password'];
+                    $_SESSION['role'] = $user['role'];
+
+                    $isOnline = $this->userModel->isOnline($_SESSION['user_email']);
+
+                    if ($isOnline) {
+                        echo json_encode([
+                            "success" => true,
+                            "message" => "Login successful!"
+                        ]);
+                    }
+                    
+                } else {
+                    echo json_encode([
+                        "success" => false,
+                        "error" => "Incorrect password. Please try again."
+                    ]);
+                }
+            } else {
+                echo json_encode([
+                    "success" => false,
+                    "error" => "No user found with that email."
+                ]);
+            }
+        }
+    }
 }
 ?>

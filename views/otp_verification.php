@@ -1,7 +1,7 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -106,7 +106,6 @@ if (session_status() === PHP_SESSION_NONE) {
             </button>
         </form>
     </div>
-
     <script>
         let timer;
         let minutes = 1;

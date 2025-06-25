@@ -33,6 +33,20 @@ class userModel {
         return $email;
     }
 
+    public function getUserEmail($email){
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function isOnline($user_email) {
+        $query = "UPDATE users SET status = 'active' WHERE email = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $user_email);
+        return $stmt->execute();
+    }
+
     public function registerUser($name, $email, $password){
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     

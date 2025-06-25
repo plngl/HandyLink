@@ -1,8 +1,8 @@
 <?php 
-if(isset($_SESSION['ID'])) {
-    header("Location: ../views/service.php");
-    exit;
-}
+    if(isset($_SESSION['ID'])) {
+        header("Location: ../views/service.php");
+        exit;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,108 +14,7 @@ if(isset($_SESSION['ID'])) {
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-        
-        .login-card {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-        
-        .input-container {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-        
-        .input-container input {
-            padding-top: 1.75rem;
-            padding-bottom: 0.75rem;
-            background-color: #f8fafc;
-            transition: all 0.3s ease;
-        }
-        
-        .input-container input:focus {
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-            border-color: #6366f1;
-            background-color: white;
-        }
-        
-        .input-container label {
-            position: absolute;
-            top: 0.75rem;
-            left: 1rem;
-            font-size: 1rem;
-            color: #64748b;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0) 100%);
-            padding: 0 0.5rem;
-        }
-        
-        .input-container input:focus + label,
-        .input-container input:not(:placeholder-shown) + label {
-            top: 0.25rem;
-            left: 0.75rem;
-            font-size: 0.75rem;
-            color: #6366f1;
-        }
-        
-        .btn-login {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-login:hover {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-login:active {
-            transform: translateY(0);
-        }
-        
-        .btn-login::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 200%;
-            height: 200%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(30deg);
-            transition: all 0.3s;
-        }
-        
-        .btn-login:hover::after {
-            left: 100%;
-        }
-        
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="login.css">
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
     <div class="login-card w-full max-w-md p-8 animate-fade-in">
@@ -163,95 +62,6 @@ if(isset($_SESSION['ID'])) {
         </div>
     </div>
 
-    <script>
-        // Toggle password visibility
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const icon = this;
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            }
-        });
-
-        // Login Form Submission
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const loginButton = document.getElementById('loginButton');
-            const loginText = document.getElementById('loginText');
-            const loginSpinner = document.getElementById('loginSpinner');
-            
-            loginText.textContent = 'Logging in...';
-            loginSpinner.classList.remove('hidden');
-            loginButton.disabled = true;
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            fetch('http://localhost/capstone/controllers/routes.php?action=loginUser', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: new URLSearchParams({
-                    'email': email,
-                    'password': password
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Welcome Back!',
-                        text: data.message,
-                        confirmButtonText: 'Continue',
-                        confirmButtonColor: '#6366f1',
-                        customClass: {
-                            popup: 'rounded-xl',
-                            confirmButton: 'px-4 py-2 rounded-lg'
-                        },
-                        timer: 2000,
-                        timerProgressBar: true
-                    }).then(() => {
-                        window.location.href = 'service.php';  
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login Failed',
-                        text: data.error,
-                        confirmButtonText: 'Try Again',
-                        confirmButtonColor: '#6366f1',
-                        customClass: {
-                            popup: 'rounded-xl'
-                        }
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Connection Error',
-                    text: 'An unexpected error occurred.',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#6366f1',
-                    customClass: {
-                        popup: 'rounded-xl'
-                    }
-                });
-            })
-            .finally(() => {
-                loginText.textContent = 'Log In';
-                loginSpinner.classList.add('hidden');
-                loginButton.disabled = false;
-            });
-        });
-    </script>
+    <script src="login.js"></script>
 </body>
 </html>

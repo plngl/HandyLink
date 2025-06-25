@@ -37,6 +37,14 @@ switch($action) {
             }
         }
         break;
+    
+    case 'login':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userController->loginUser();
+        } else {
+            echo json_encode(["error" => "Invalid request method"]);
+        }
+        break;
 
     default:
         echo json_encode(["error" => "Unknown action"]);
