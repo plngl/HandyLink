@@ -3,7 +3,7 @@
         session_start();
     }
     if(isset($_SESSION['ID'])) {
-        header("Location: service.php");
+        header("Location: home.php");
         exit;
     }
 
@@ -14,7 +14,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register | Your Service</title>
+    <title>Register</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -53,7 +53,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
                 timer: 2000,
                 timerProgressBar: true
             }).then(() => {
-                window.location.href = 'service.php';  
+                window.location.href = 'home.php';  
             });
         } else {
             Swal.fire({
