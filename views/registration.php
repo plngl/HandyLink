@@ -2,11 +2,10 @@
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    if(isset($_SESSION['ID'])) {
-        header("Location: home.php");
+    if(isset($_SESSION['user_id'])) {
+        header("Location: ../views/home.php");
         exit;
     }
-
     $base_url = dirname($_SERVER['SCRIPT_NAME'], 2) . '/';
 ?>
 <!DOCTYPE html>

@@ -47,6 +47,13 @@ class userModel {
         return $stmt->execute();
     }
 
+    public function updateRole($id) {
+        $query = "UPDATE users SET role = 'client' WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('i', $id);
+        return $stmt->execute();
+    }
+
     public function registerUser($name, $email, $password){
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     
@@ -77,6 +84,20 @@ class userModel {
         header('Content-Type: application/json');
         echo json_encode($response);
         exit;
+    }
+
+    public function updateProfile($userId, $filename) {
+        $query = "UPDATE users SET profile = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('si', $filename, $userId);
+        return $stmt->execute();
+    }
+
+    public function updateName($user_id, $name) {
+        $query = "UPDATE users SET name = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('si', $name, $user_id);
+        return $stmt->execute();
     }
 }
 ?>

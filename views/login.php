@@ -1,8 +1,12 @@
-<?php 
-    if(isset($_SESSION['ID'])) {
+<?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if(isset($_SESSION['user_id'])) {
         header("Location: ../views/home.php");
         exit;
     }
+    $base_url = dirname($_SERVER['SCRIPT_NAME'], 2) . '/';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,7 +65,9 @@
             </a>
         </div>
     </div>
-
+    <script>
+        const BASE_URL = "<?= $base_url ?>";
+    </script>
     <script src="script/login.js"></script>
 </body>
 </html>

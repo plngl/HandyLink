@@ -75,5 +75,63 @@ class UserController {
             }
         }
     }
+
+    public function updateProfile() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $user_id = $_SESSION['user_id'] ?? '';
+
+            $response = ["success" => true, "messages" => []];
+
+            // Handle profile picture upload
+            if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+                $targetDir = __DIR__ . '/../images/profile/';
+                $fileTmpPath = $_FILES['profile_picture']['tmp_name'];
+                $fileName = $_FILES['profile_picture']['name'];
+                $fileNameCmps = explode(".", $fileName);
+                $fileExtension = strtolower(end($fileNameCmps));
+                $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
+
+                if (in_array($fileExtension, $allowedExts)) {
+                    $newFileName = uniqid('profile_', true) . '.' . $fileExtension;
+                    $destPath = $targetDir . $newFileName;
+
+                    if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        if ($this->userModel->updateProfile($user_id, $newFileName)) {
+                            $_SESSION['profile_picture'] = $newFileName;
+                            $response['messages'][] = "Profile picture updated.";
+                        } else {
+                            $response = ["success" => false, "error" => "Failed to update profile picture in database."];
+                            echo json_encode($response);
+                            return;
+                        }
+                    } else {
+                        $response = ["success" => false, "error" => "Failed to move uploaded profile picture."];
+                        echo json_encode($response);
+                        return;
+                    }
+                } else {
+                    $response = ["success" => false, "error" => "Invalid image type."];
+                    echo json_encode($response);
+                    return;
+                }
+            }
+
+            // Update name if it has changed
+            if (!empty($name) && $name !== $_SESSION['name']) {
+                if ($this->userModel->updateName($user_id, $name)) {
+                    $_SESSION['name'] = $name;
+                    $response['messages'][] = "Name updated successfully.";
+                } else {
+                    $response = ["success" => false, "error" => "Failed to update name."];
+                    echo json_encode($response);
+                    return;
+                }
+            }
+
+            echo json_encode($response);
+        }
+    }
 }
 ?>

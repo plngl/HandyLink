@@ -22,7 +22,9 @@ class OtpController{
 
             $verificationResult = $this->otpModel->verifyOtp($user_id, $otp);
 
-            if ($verificationResult['success']) {
+            $updateRole = $this->userModel->updateRole($user_id);
+
+            if ($verificationResult['success'] && $updateRole) {
                 echo json_encode(["success" => true, "message" => $verificationResult['message']]);
             } else {
                 echo json_encode(["success" => false, "error" => $verificationResult['error']]);

@@ -27,7 +27,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    fetch('http://localhost/handylink/controllers/routes.php?action=login', {
+    fetch(BASE_URL + '/controllers/routes.php?action=login', {
         method: 'POST',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"

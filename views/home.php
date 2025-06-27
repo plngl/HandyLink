@@ -1,3 +1,12 @@
+<?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if(!isset($_SESSION['user_id'])) {
+        header("Location: ../views/login.php");
+        exit;
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -166,7 +175,7 @@
                                 <p class="text-sm font-medium text-gray-800">John Doe</p>
                                 <p class="text-xs text-gray-500">Professional Account</p>
                             </div>
-                            <a href="showcase.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                            <a href="#" onclick="event.preventDefault(); openAccountPopup();" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
                                 <i class="fas fa-user mr-3 text-gray-400"></i> Profile
                             </a>
                             <a href="dashboard.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
@@ -175,7 +184,7 @@
                             <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
                                 <i class="fas fa-lock mr-3 text-gray-400"></i> Security
                             </a>
-                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                            <a href="../controllers/logout.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
                                 <i class="fas fa-sign-out-alt mr-3 text-gray-400"></i> Logout
                             </a>
                         </div>
@@ -538,5 +547,9 @@
             </div>
         </section>
     </main>
+
+    <script src="script/home.js"></script>
+
+    <?php include 'client/profile.php'; ?>
 </body>
 </html>

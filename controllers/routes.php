@@ -1,9 +1,11 @@
 <?php
 require_once 'userController.php';
 require_once 'otpController.php';
+require_once 'serviceController.php';
 
 $userController = new UserController();
 $otpController = new OtpController();
+$serviceContoller = new serviceController(); 
 
 $action = $_GET['action'] ?? '';
 
@@ -43,6 +45,18 @@ switch($action) {
             $userController->loginUser();
         } else {
             echo json_encode(["error" => "Invalid request method"]);
+        }
+        break;
+
+    case 'home':
+        if ($_SERVER['REQUEST_METHOD']  === 'GET') {
+            $serviceContoller->displayService();
+        }
+        break;
+
+    case 'updateProfile':
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userController->updateProfile();
         }
         break;
 
