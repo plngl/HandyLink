@@ -16,15 +16,16 @@ class OtpController{
     }
 
     public function verify() {
+        
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user_id = $_POST['user_id'];
             $otp = $_POST['otp'];
 
             $verificationResult = $this->otpModel->verifyOtp($user_id, $otp);
 
-            $updateRole = $this->userModel->updateRole($user_id);
+            $verify_email = $this->userModel->verifyEmail($user_id);
 
-            if ($verificationResult['success'] && $updateRole) {
+            if ($verificationResult['success'] && $verify_email) {
                 echo json_encode(["success" => true, "message" => $verificationResult['message']]);
             } else {
                 echo json_encode(["success" => false, "error" => $verificationResult['error']]);

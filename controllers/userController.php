@@ -133,5 +133,40 @@ class UserController {
             echo json_encode($response);
         }
     }
+
+    public function changePassword() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $response = ["success" => false, "messages" => []];
+    
+            $current_pass = $_POST['current_password'] ?? '';
+            $pass = $_POST['new_password'] ?? '';
+            $confirm_pass = $_POST['confirm_password'] ?? '';
+    
+            $user_password = $_SESSION['password'];
+            $user_id = $_SESSION['user_id'];
+    
+            if ($pass !== $confirm_pass) {
+                $response = ["success" => false, "error" => "Passwords do not match"];
+                echo json_encode($response);
+                return;
+            }
+    
+            if (!password_verify($current_pass, $user_password)) {
+                $response = ["success" => false, "error" => "Current password is incorrect"];
+                echo json_encode($response);
+                return;
+            }
+
+            $result = $this->userModel->updatePassword($user_id, $pass);
+
+            if ($result) {
+                $response = ["success" => true, "message" => "Password changed successfully"];
+            } else {
+                $response = ["success" => false, "error" => "Failed to update the password"];
+            }
+    
+            echo json_encode($response);
+        }
+    }
 }
 ?>

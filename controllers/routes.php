@@ -2,10 +2,16 @@
 require_once 'userController.php';
 require_once 'otpController.php';
 require_once 'serviceController.php';
+require_once 'verificationController.php';
+require_once 'locationController.php';
+require_once 'categoryController.php';
 
 $userController = new UserController();
 $otpController = new OtpController();
-$serviceContoller = new serviceController(); 
+$serviceContoller = new serviceController();
+$verifyController = new verificationController();
+$locationController = new locationController();
+$catController = new categoryController();
 
 $action = $_GET['action'] ?? '';
 
@@ -57,6 +63,54 @@ switch($action) {
     case 'updateProfile':
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userController->updateProfile();
+        }
+        break;
+    
+    case 'checkId':
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $verifyController->checkID();
+        }
+        break;
+    
+    case 'saveId':
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $verifyController->saveId();
+        } 
+        break;
+
+    case 'validateCertificate':
+            if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $verifyController->validateTesdaCertificate();
+            }
+        break;
+    
+    case 'saveTesda':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        }
+        break;
+    
+    case 'changePass':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userController->changePassword();
+        }
+        break;
+
+    case 'getLocation':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $locationController->saveLocation();
+        }
+        break;
+    
+    case 'displayCategory':
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $catController->displayCategory();
+        }
+        break;
+
+    case 'displaySubCategory':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $catController->getSubcategories();
         }
         break;
 

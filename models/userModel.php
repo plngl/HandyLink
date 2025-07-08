@@ -99,5 +99,25 @@ class userModel {
         $stmt->bind_param('si', $name, $user_id);
         return $stmt->execute();
     }
+
+    public function verifyEmail ($user_id) {
+        try {
+            $query = "INSERT INTO verified_email (user_id) VALUES (?)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param('i', $user_id);
+            return $stmt->execute();
+        } catch (Exception $e) {
+            error_log('Database error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function updatePassword($user_id, $password) {
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $query = "UPDATE users SET Password = ? WHERE ID = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('si', $hashed_password, $user_id);
+        return $stmt->execute();
+    }
 }
 ?>

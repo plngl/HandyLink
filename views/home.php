@@ -6,6 +6,8 @@
         header("Location: ../views/login.php");
         exit;
     }
+
+    $user_name = $_SESSION['name'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -134,7 +136,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center">
-                    <a href="#" class="flex items-center">
+                    <a href="home.php" class="flex items-center">
                         <svg class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                         </svg>
@@ -164,7 +166,7 @@
                     
                     <div class="relative">
                         <button id="profileDropdownTrigger" class="flex items-center space-x-2 focus:outline-none">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile" class="w-9 h-9 rounded-full object-cover border-2 border-indigo-100">
+                            <img src="<?php echo !empty( $_SESSION['profile']) ? '../images/profile/' . htmlspecialchars($_SESSION['profile'], ENT_QUOTES, 'UTF-8') : '../images/profile/default.jpg'; ?>" alt="User Profile" class="w-9 h-9 rounded-full object-cover border-2 border-indigo-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -172,21 +174,50 @@
                         
                         <div id="profileDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-1 z-50 hidden border border-gray-100 divide-y divide-gray-100">
                             <div class="px-4 py-3">
-                                <p class="text-sm font-medium text-gray-800">John Doe</p>
+                                <p class="text-sm font-medium text-gray-800">
+                                    <?php echo $user_name; ?>
+                                </p>
+                                <?php if ($_SESSION['role'] == 'worker') : ?>
                                 <p class="text-xs text-gray-500">Professional Account</p>
+                                <?php endif;?>
+                                <?php if ($_SESSION['role'] == 'client') : ?>
+                                <p class="text-xs text-gray-500">Client Account</p>
+                                <?php endif;?>
                             </div>
-                            <a href="#" onclick="event.preventDefault(); openAccountPopup();" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
-                                <i class="fas fa-user mr-3 text-gray-400"></i> Profile
+
+                            <a href="#" onclick="event.preventDefault(); openAccountPopup();" 
+                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200 rounded-md">
+                                <i class="fas fa-user mr-3 text-indigo-600"></i>
+                                <span>Profile</span>
                             </a>
-                            <a href="dashboard.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
-                                <i class="fas fa-tachometer-alt mr-3 text-gray-400"></i> Dashboard
+
+                            <?php if ($_SESSION['role'] == "worker"): ?>
+                                <a href="dashboard.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors rounded-md">
+                                    <i class="fas fa-tachometer-alt mr-3 text-indigo-600"></i> Dashboard
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($_SESSION['role'] == "client"): ?>
+                                <a href="#" onclick="event.preventDefault(); openVerificationPopup();" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors rounded-md">
+                                    <i class="fas fa-check-circle mr-3 text-indigo-600"></i> Verify your Account
+                                </a>
+                                <a href="#" onclick="event.preventDefault(); openVerifyWorkerModal();" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors rounded-md">
+                                    <i class="fas fa-hammer mr-3 text-indigo-600"></i> Be a Worker
+                                </a>
+                            <?php endif; ?>
+
+                            <a href="#" onclick="event.preventDefault(); openSecurityPopup();" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors rounded-md">
+                                <i class="fas fa-lock mr-3 text-indigo-600"></i> Security
                             </a>
-                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
-                                <i class="fas fa-lock mr-3 text-gray-400"></i> Security
+
+                            <a href="#" onclick="toggleModal(true)" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors rounded-md">
+                                <i class="fas fa-plus-circle mr-3 text-indigo-600"></i> Add New Service
                             </a>
-                            <a href="../controllers/logout.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
-                                <i class="fas fa-sign-out-alt mr-3 text-gray-400"></i> Logout
+
+                            <a href="logout.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors rounded-md">
+                                <i class="fas fa-sign-out-alt mr-3 text-indigo-600"></i> Logout
                             </a>
+
                         </div>
                     </div>
                 </div>
@@ -212,37 +243,145 @@
         </section>
 
         <!-- Category Tabs -->
-        <section class="mb-10">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="flex items-center">
-                    <button class="p-3 text-gray-500 hover:text-indigo-600 transition-colors hidden md:block" onclick="scrollTabs(-100)">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <div class="flex-1 overflow-x-auto scroll-container">
-                        <div class="tab flex space-x-1 px-1 py-2">
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors tab-active" data-category="All">All Services</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="Plumbing">Plumbing</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="Electrical">Electrical</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="Cleaning">Cleaning</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="Appliance Repair">Appliance Repair</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="Carpentry">Carpentry</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="Painting">Painting</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="Pest Control">Pest Control</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="Landscaping">Landscaping</button>
-                            <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors" data-category="HVAC">HVAC</button>
+        <!-- Replace your current Category Tabs section with this code -->
+<section class="mb-10">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="flex items-center">
+            <button class="p-3 text-gray-500 hover:text-indigo-600 transition-colors hidden md:block" onclick="scrollTabs(-100)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <div class="flex-1 overflow-x-auto scroll-container">
+                <div class="tab flex space-x-1 px-1 py-2">
+                    <!-- All Services Tab -->
+                    <div class="relative">
+                        <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors tab-active" data-category="All">
+                            All Services
+                        </button>
+                    </div>
+                    
+                    <!-- Digital Services -->
+                    <div class="relative group">
+                        <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center" data-category="Digital">
+                            Digital Services
+                            <svg class="w-4 h-4 ml-1 text-gray-500 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-1 w-64 bg-white rounded-lg shadow-xl py-2 z-50 hidden group-hover:block border border-gray-200 divide-y divide-gray-100">
+                            <div class="px-4 py-2">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Graphics & Design</h4>
+                                <div class="mt-2 space-y-1">
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Logo Design</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Brand Style Guides</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Business Cards</a>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Digital Marketing</h4>
+                                <div class="mt-2 space-y-1">
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Social Media Marketing</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">SEO</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Content Marketing</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <button class="p-3 text-gray-500 hover:text-indigo-600 transition-colors hidden md:block" onclick="scrollTabs(100)">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
+                    
+                    <!-- Home Services -->
+                    <div class="relative group">
+                        <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center" data-category="Home">
+                            Home Services
+                            <svg class="w-4 h-4 ml-1 text-gray-500 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-1 w-64 bg-white rounded-lg shadow-xl py-2 z-50 hidden group-hover:block border border-gray-200 divide-y divide-gray-100">
+                            <div class="px-4 py-2">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Repair & Installation</h4>
+                                <div class="mt-2 space-y-1">
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Plumbing</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Electrical</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Appliance Repair</a>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Cleaning</h4>
+                                <div class="mt-2 space-y-1">
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Deep Cleaning</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Move-in/out Cleaning</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Carpet Cleaning</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Business Services -->
+                    <div class="relative group">
+                        <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center" data-category="Business">
+                            Business Services
+                            <svg class="w-4 h-4 ml-1 text-gray-500 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-1 w-64 bg-white rounded-lg shadow-xl py-2 z-50 hidden group-hover:block border border-gray-200 divide-y divide-gray-100">
+                            <div class="px-4 py-2">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Professional Services</h4>
+                                <div class="mt-2 space-y-1">
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Virtual Assistance</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Business Consulting</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Legal Services</a>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Financial</h4>
+                                <div class="mt-2 space-y-1">
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Accounting</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Tax Preparation</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Financial Planning</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lifestyle -->
+                    <div class="relative group">
+                        <button class="tablinks px-5 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center" data-category="Lifestyle">
+                            Lifestyle
+                            <svg class="w-4 h-4 ml-1 text-gray-500 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-1 w-64 bg-white rounded-lg shadow-xl py-2 z-50 hidden group-hover:block border border-gray-200 divide-y divide-gray-100">
+                            <div class="px-4 py-2">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Health & Wellness</h4>
+                                <div class="mt-2 space-y-1">
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Personal Training</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Nutrition Coaching</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Yoga Instruction</a>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2">
+                                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Events</h4>
+                                <div class="mt-2 space-y-1">
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Event Planning</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Photography</a>
+                                    <a href="#" class="block px-2 py-1 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded">Catering</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-
+            <button class="p-3 text-gray-500 hover:text-indigo-600 transition-colors hidden md:block" onclick="scrollTabs(100)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</section>
         <!-- Services Grid -->
         <section>
             <div class="flex justify-between items-center mb-6">
@@ -549,7 +688,12 @@
     </main>
 
     <script src="script/home.js"></script>
+    <script src="script/get_user_location.js"></script>
 
     <?php include 'client/profile.php'; ?>
+    <?php include 'client/user_verification.php'; ?>
+    <?php include 'client/worker_application.php'; ?>
+    <?php include 'worker/add_service.php'; ?>
+    <?php include 'security.php'; ?>
 </body>
 </html>
